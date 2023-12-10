@@ -245,7 +245,27 @@ public class EmployeePayrollService
 			  System.err.println("Error writing to the file: " + e.getMessage());
 		  }
 	  }
+	  //< ----------------------------------- UC-5 ------------------------------------> 
 	  
+	  /*
+		 * @desc:This method reads the employee details from the file
+		 * 
+		 * @params:none
+		 * 
+		 * @returns:void
+		 */
+	  public void readFromFile()
+	  {
+		  Path path = Paths.get(filePath);
+		  
+		  try {
+			  Files.lines(path).forEach(System.out::println);
+		     
+		  }catch(IOException e)
+		  {
+			  System.err.println("Error reading from the file: " + e.getMessage());
+		  }
+	  }
 	  
 	  
 	    
