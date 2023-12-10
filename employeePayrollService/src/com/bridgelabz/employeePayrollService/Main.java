@@ -9,9 +9,12 @@ public class Main {
 		EmployeePayrollService employeePayrollServiceObj = new EmployeePayrollService();
 		
 		employeePayrollServiceObj.readEmployeeData(scanner);
+		employeePayrollServiceObj.readEmployeeData(scanner);
+		employeePayrollServiceObj.readEmployeeData(scanner);
 		//employeePayrollServiceObj.writeEmployeeData();
 		employeePayrollServiceObj.writeToFile();
 		employeePayrollServiceObj.readFromFile();
+		System.out.print(employeePayrollServiceObj.countEntries());
 	}
 	
 	

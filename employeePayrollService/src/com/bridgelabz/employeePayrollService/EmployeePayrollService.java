@@ -266,7 +266,27 @@ public class EmployeePayrollService
 			  System.err.println("Error reading from the file: " + e.getMessage());
 		  }
 	  }
+//< ----------------------------------- UC-6 ------------------------------------> 
 	  
+	  /*
+		 * @desc:This method returns the no. of entries in a file
+		 * 
+		 * @params:none
+		 * 
+		 * @returns:int
+		 */
+	  public int countEntries() {
+	        try {
+	            // Read all lines from the file
+	            List<String> lines = Files.readAllLines(Paths.get(filePath));
+
+	            // Count the number of lines (entries)
+	            return lines.size();
+	        } catch (IOException e) {
+	            System.err.println("Error reading the file: " + e.getMessage());
+	            return -1; // Return -1 to indicate an error
+	        }
+	    }
 	  
 	    
 }
