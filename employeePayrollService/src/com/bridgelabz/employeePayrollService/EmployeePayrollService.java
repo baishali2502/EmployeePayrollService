@@ -1,4 +1,5 @@
 package com.bridgelabz.employeePayrollService;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -48,12 +49,12 @@ public class EmployeePayrollService
 		try 
 		{
 		    Path path = Paths.get(directoryPath);
-		    if(Files.exists(path))
-			    System.out.println("Directory already exists");
-		    else
+		    if(Files.exists(path)) {
+			    //System.out.println("Directory already exists");
+		    }else
 		    {			 
 			    Path dirpath = Files.createDirectories(path);
-				System.out.println("Directory created at "+dirpath.toString());
+				//System.out.println("Directory created at "+dirpath.toString());
 			} 
 		}
 		catch (Exception e) 
@@ -74,9 +75,9 @@ public class EmployeePayrollService
 		try
 		{
 			Path path = Paths.get(filePath);
-			if(checkFileExist(path))
-			    System.out.println("File already exists");
-		    else
+			if(checkFileExist(path)) {
+			    System.out.println("File already exists at : "+path.toAbsolutePath());
+			}else
 		    {			 
 			    Path filepath = Files.createFile(path);
 				System.out.println("File created at "+filepath.toString());
@@ -144,7 +145,80 @@ public class EmployeePayrollService
 	            System.err.println("Error listing files and directories: " + e.getMessage());
 	        }
       }
+	 //< ----------------------------------- UC-3 ------------------------------------>
 	 
-	    
+		/*
+		 * @desc: This method creates a Watch Service to watch particular directory
+		 * along with all Files and Sub Directories
+		 * 
+		 * @params:Directory path,Filepath
+		 * 
+		 * @returns:void
+		 */
+	  void startWatchService(Path directoryToWatch, Path countFile) throws IOException {
+	        try (WatchService watchService = FileSystems.getDefault().newWatchService()) {
+	            // Register the directory and its subdirectories for ENTRY_MODIFY events
+	            Files.walkFileTree(directoryToWatch, new SimpleFileVisitor<Path>() {
+	                @Override
+	                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+	                    dir.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
+	                    return FileVisitResult.CONTINUE;
+	                }
+	            });
+
+	            System.out.println("Watch service is running...");
+
+	            // Infinite loop to wait for events
+	            while (true) {
+	                WatchKey key;
+	                try {
+	                    key = watchService.take();
+	                } catch (InterruptedException e) {
+	                    System.err.println("Error waiting for watch service events: " + e.getMessage());
+	                    return;
+	                }
+
+	                for (WatchEvent<?> event : key.pollEvents()) {
+	                    Path modifiedPath = (Path) event.context();
+	                    System.out.println("File modified: " + modifiedPath);
+
+	                    // Count the number of entries in the file
+	                    int count = countEntries(countFile);
+	                    System.out.println("Number of entries in the file: " + count);
+	                }
+
+	                key.reset();
+	            }
+	        }
+	    }
+
+	    int countEntries(Path countFile) throws IOException 
+	    {
+	        if (!Files.exists(countFile)) {
+	            Files.createFile(countFile);
+	        }
+
+	        // Read the count from the file
+	        String countString = Files.readString(countFile);
+
+	        // Parse the count as an integer
+	        int count = 0;
+	        try {
+	            count = Integer.parseInt(countString.trim());
+	        } catch (NumberFormatException e) {
+	            System.err.println("Error parsing count from the file: " + e.getMessage());
+	        }
+
+	        // Increment the count
+	        count++;
+
+	        // Write the updated count back to the file
+	        Files.writeString(countFile, String.valueOf(count));
+
+	        return count;
+	    }
+	 
+	  
+	  
 	    
 }
