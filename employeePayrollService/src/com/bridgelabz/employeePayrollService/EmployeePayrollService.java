@@ -217,7 +217,35 @@ public class EmployeePayrollService
 
 	        return count;
 	    }
-	 
+	  //< ----------------------------------- UC-4 ------------------------------------> 
+	    
+		/*
+		 * @desc:This method adds the employee details to a file
+		 * 
+		 * @params:none
+		 * 
+		 * @returns:void
+		 */
+	  public void writeToFile()
+	  {
+		  createDirectory();
+		  createFile();
+		  Path path = Paths.get(filePath);
+		  List<String> emplist = new ArrayList<>();
+		  for(Employee emp:employeeList)
+		  {
+			  emplist.add(emp.toString());
+		  }
+		  
+		  try {
+		      Files.write(path,emplist);
+		      System.out.println("Content added to the file successfully.");
+		  }catch(IOException e)
+		  {
+			  System.err.println("Error writing to the file: " + e.getMessage());
+		  }
+	  }
+	  
 	  
 	  
 	    
